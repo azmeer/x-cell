@@ -18,6 +18,4 @@ class TableModel {
   }
 }
 
-const testTable = new TableModel();
-
 module.exports = TableModel;
