@@ -76,10 +76,17 @@ class TableView {
 
   attachEventHandlers() {
     this.sheetBodyEl.addEventListener('click', this.handleSheetClick.bind(this));
+    this.formulaBarEl.addEventListener('keyup', this.handleFormulaBarChange.bind(this));
   }
   
   isColumnHeaderRow(row) {
     return row < 1;
+  }
+
+  handleFormulaBarChange(evt) {
+    const value = this.formulaBarEl.value;
+    this.model.setValue(this.currentCellLocation, value);
+    this.renderTableBody();
   }
   
   handleSheetClick(evt) {
