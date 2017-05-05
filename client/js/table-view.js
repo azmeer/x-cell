@@ -1,4 +1,4 @@
-const { getLetterRange } = require'./array-util');
+const { getLetterRange } = require('./array-util');
 const { removeChildren, createTH } = require('./dom-util');
 
 class TableView {
@@ -7,7 +7,7 @@ class TableView {
   }
 
   init() {
-    this.initDomReferencs();
+    this.initDomReferences();
     this.renderTable();
   }
 
