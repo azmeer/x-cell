@@ -1,4 +1,4 @@
-const { getLetterRange } = require('./array-util');
+const { getRange, getLetterRange } = require('./array-util');
 const { removeChildren, createTR, createTH, createTD } = require('./dom-util');
 
 class TableView {
@@ -17,6 +17,7 @@ class TableView {
     this.headerRowEl = document.querySelector('THEAD TR');
     this.sheetBodyEl = document.querySelector('TBODY');
     this.formulaBarEl = document.querySelector('#formula-bar');
+    this.summationBarEl = document.querySelector('TFOOT');
   }
 
   initCurrentCell() {
@@ -38,6 +39,7 @@ class TableView {
   renderTable() {
     this.renderTableHeader();
     this.renderTableBody();
+    this.renderSummationBar();
   }
 
   renderTableHeader() {
@@ -51,22 +53,21 @@ class TableView {
     return this.currentCellLocation.col === col &&
       this.currentCellLocation.row === row;
   }
-  
-  
+ 
   renderTableBody() {
     const fragment = document.createDocumentFragment();
     for (let row = 0; row < this.model.numRows; row++) {
       const tr = createTR();
       for (let col = 0; col < this.model.numCols; col++) {
-	const position = {col: col, row: row};
-	const value = this.model.getValue(position);
-	const td = createTD(value);
+        const position = {col: col, row: row};
+        const value = this.model.getValue(position);
+        const td = createTD(value);
 
-	if (this.isCurrentCell(col, row)) {
-	  td.className = 'current-cell';
-	}
-	
-	tr.appendChild(td);
+        if (this.isCurrentCell(col, row)) {
+          td.className = 'current-cell';
+        }
+        
+        tr.appendChild(td);
       }
       fragment.appendChild(tr);
     }
@@ -74,6 +75,37 @@ class TableView {
     this.sheetBodyEl.appendChild(fragment);
   }
 
+  renderSummationBar() {
+    removeChildren(this.summationBarEl);
+    getRange(0, this.model.numCols) 
+      .map( column => createTD( this.sumColumn(column) ))
+      .forEach(td => this.summationBarEl.appendChild(td));
+  }
+
+  getColumnPositions(column) {
+    return Object.keys(this.model.data)
+      .map(position => position.match(/^(\d+):(\d+)/).slice(1))
+      .filter(rowAndColPair => parseInt(rowAndColPair[0]) === column)
+      .map(matchingPosition =>
+           ({col: matchingPosition[0], row: matchingPosition[1]}));
+  }
+  
+  sumColumn(column) {
+    const sum = this.getColumnPositions(column)
+          .map(position => this.model.getValue(position))
+          .map(value => parseInt(value, 10))
+          .reduce(function (sum, value) {
+            if (sum === null) {
+              return value;
+            } else if (isNaN(value)) {
+              return sum;
+            } else {
+              return sum + value;
+            }
+          }, null);
+    return (isNaN(sum)) ? '' : sum;
+  }
+  
   attachEventHandlers() {
     this.sheetBodyEl.addEventListener('click', this.handleSheetClick.bind(this));
     this.formulaBarEl.addEventListener('keyup', this.handleFormulaBarChange.bind(this));
@@ -83,6 +115,7 @@ class TableView {
     const value = this.formulaBarEl.value;
     this.model.setValue(this.currentCellLocation, value);
     this.renderTableBody();
+    this.renderSummationBar();
   }
   
   handleSheetClick(evt) {
@@ -92,6 +125,7 @@ class TableView {
     this.currentCellLocation = { col: col, row: row };
     this.renderTableBody();
     this.renderFormulaBar();
+    this.renderSummationBar();
   }
   
 }
