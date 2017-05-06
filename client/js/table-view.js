@@ -91,19 +91,11 @@ class TableView {
   }
   
   sumColumn(column) {
-    const sum = this.getColumnPositions(column)
-          .map(position => this.model.getValue(position))
-          .map(value => parseInt(value, 10))
-          .reduce(function (sum, value) {
-            if (sum === null) {
-              return value;
-            } else if (isNaN(value)) {
-              return sum;
-            } else {
-              return sum + value;
-            }
-          }, null);
-    return (isNaN(sum)) ? '' : sum;
+    return this.getColumnPositions(column)
+      .map(position => this.model.getValue(position))
+      .map(value => parseInt(value, 10))
+      .filter(value => !isNaN(value))
+      .reduce( ((sum, value) => sum + value), 0 );
   }
   
   attachEventHandlers() {
