@@ -53,6 +53,24 @@ describe('table-view', () => {
       
   });
 
+  describe('summation bar', () => {
+    it('has the right size', () => {
+      // set up initial state
+      const numCols = 10;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+      // inspect initial state
+      let trs = document.querySelectorAll('TFOOT TD');
+      expect(trs.length).toBe(numCols);
+    });
+    it('gets the columns with numerical data', () => {
+    });
+    it('calculates the correct sum', () => {
+    });
+  });
+
   describe('table body', () => {
     it('highlights the current cell when clicked', () => {
       // set up the initial state

@@ -77,7 +77,7 @@ class TableView {
 
   renderSummationBar() {
     removeChildren(this.summationBarEl);
-    getRange(0, this.model.numCols) 
+    getRange(0, this.model.numCols - 1) 
       .map( column => createTD( this.sumColumn(column) ))
       .forEach(td => this.summationBarEl.appendChild(td));
   }
