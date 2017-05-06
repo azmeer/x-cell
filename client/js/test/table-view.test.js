@@ -53,6 +53,48 @@ describe('table-view', () => {
       
   });
 
+  describe('summation bar', () => {
+    it('has the right size', () => {
+      // set up initial state
+      const numCols = 10;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+      // inspect initial state
+      let tds = document.querySelectorAll('TFOOT TD');
+      expect(tds.length).toBe(numCols);
+    });
+    
+    it('gets the columns with numerical data', () => {
+      // set up initial state
+      const model = new TableModel(3, 3);
+      const view = new TableView(model);
+      model.setValue({col: 2, row: 0}, 'abc');
+      model.setValue({col: 2, row: 1}, '123');
+      view.init();
+      
+      // inspect initial state
+      let numericalEntries = view.getColumnPositions(2);
+      expect(numericalEntries.length).toBe(2);
+      
+    });
+    it('calculates the correct sum', () => {
+      // set up initial state
+      const model = new TableModel(3, 4);
+      const view = new TableView(model);
+      model.setValue({col: 2, row: 0}, 'abc');
+      model.setValue({col: 2, row: 1}, '-5');
+      model.setValue({col: 2, row: 2}, '3');
+      view.init();
+
+      // inspect the initial state
+      let tds = document.querySelectorAll('TFOOT TD');
+      expect(tds[2].textContent).toBe('-2');
+      
+    });
+  });
+
   describe('table body', () => {
     it('highlights the current cell when clicked', () => {
       // set up the initial state

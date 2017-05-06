@@ -10,6 +10,10 @@ td {
   padding: 3px;
 }
 
+tfoot {
+  background-color: #5ae643;
+}
+
 .current-cell {
   background-color: pink;
 }
