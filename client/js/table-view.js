@@ -95,7 +95,7 @@ class TableView {
       .map(position => this.model.getValue(position))
       .map(value => parseInt(value, 10))
       .filter(value => !isNaN(value))
-      .reduce( ((sum, value) => sum + value), 0 );
+      .reduce(((sum, value) => sum + value), 0);
   }
   
   attachEventHandlers() {
